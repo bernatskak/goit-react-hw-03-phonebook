@@ -27,7 +27,7 @@ class App extends Component {
     }
     contact.id = nanoid(10);
     this.setState(({ contacts }) => ({
-      contacts: [...contacts, contact],
+      contacts: [contact, ...contacts],
     }));
   };
 
@@ -48,6 +48,20 @@ class App extends Component {
     }));
     this.setState({ filter: '' });
   };
+  componentDidMount() {
+    const myContacts = localStorage.getItem('my-contacts');
+    const parsedMyContacts = JSON.parse(myContacts);
+
+    if (parsedMyContacts) {
+      this.setState({ contacts: parsedMyContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('my-contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   render() {
     const filteredList = this.searchContact();
